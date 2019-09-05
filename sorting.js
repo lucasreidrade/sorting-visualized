@@ -1,4 +1,5 @@
 let values = [];
+let strokes = [];
 const sleepTime = 10;
 
 var idx1 = -1;
@@ -19,9 +20,8 @@ function setup() {
   
 
   createCanvas(size, size);
-  for (let i = 0; i < size; i++) {
-    values.push(i);
-  }
+  values = Array.from(Array(size).keys());
+  strokes = new Array(size).fill('white');
   
   createP('Speed');
   createSpan('Fast');
@@ -61,16 +61,14 @@ function setup() {
 function draw() {
   background(0);
   for (let i = 0; i < values.length; i++) {
-    stroke(255);
-    if (i == idx1) stroke('red');
-    if (i == idx2) stroke('blue');
+    stroke(strokes[i]);
     line(i, height, i, height - values[i]);
   }
   timer.html('Time between comparations = '+ speed.value() + ' ms')
 }
 
 function doReset() {
-  values = Array.from(Array(650).keys());
+  values = Array.from(Array(size).keys());
   done = true;
   info_cmp.html('Compare Count = 0');
   info_swp.html('Swap Count    = 0');
@@ -96,12 +94,12 @@ function sleep(ms) {
 }
 
 async function visualCompare(arr, a, b) {
-  idx1 = a;
-  idx2 = b;
+  strokes[a] = 'red';
+  strokes[b] = 'blue';
   //Sleep so that sort can be visualized
   await sleep(speed.value());
-  idx1 = -1;
-  idx2 = -1;
+  strokes[a] = 'white';
+  strokes[b] = 'white';
   cmp_cnt++;
   info_cmp.html('Compare Count = ' + cmp_cnt);
   return arr[a] > arr[b];
